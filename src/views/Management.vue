@@ -215,6 +215,12 @@ const handleSave = async () => {
     return
   }
 
+  const currentUser = JSON.parse(sessionStorage.getItem('ticketapp_session'))
+  if (!currentUser) {
+    formError.value = 'User not logged in.'
+    return
+  }
+
   try {
     if (editing.value) {
       await ticketService.update(ticketForm.value.id, ticketForm.value)
@@ -224,12 +230,16 @@ const handleSave = async () => {
     } else {
       const newTicket = {
         ...ticketForm.value,
-        id: Date.now()
+        id: Date.now(),
+        userId: currentUser.id,        // ✅ Attach logged-in user’s ID
+        username: currentUser.username // (Optional, for readability)
       }
+
       const created = await ticketService.create(newTicket)
       tickets.value.push(created)
       showToast('Ticket created!', 'success')
     }
+
     closeForm()
   } catch (err) {
     formError.value = 'Failed to save ticket'
@@ -237,13 +247,28 @@ const handleSave = async () => {
   }
 }
 
+
 const editTicket = (ticket) => {
+  const currentUser = JSON.parse(sessionStorage.getItem('ticketapp_session'))
+  if (ticket.userId !== currentUser.id) {
+    showToast('You can only edit your own tickets', 'error')
+    return
+  }
+  
   editing.value = true
   ticketForm.value = { ...ticket }
   showForm.value = true
 }
 
 const deleteTicket = async (id) => {
+  const ticket = tickets.value.find(t => t.id === id)
+  const currentUser = JSON.parse(sessionStorage.getItem('ticketapp_session'))
+  
+  if (ticket.userId !== currentUser.id) {
+    showToast('You can only delete your own tickets', 'error')
+    return
+  }
+  
   if (confirm('Are you sure you want to delete this ticket?')) {
     try {
       await ticketService.delete(id)
@@ -269,12 +294,15 @@ onMounted(async () => {
     router.push('/login')
     return
   }
+  
   user.value = JSON.parse(currentUser)
   
   try {
-    tickets.value = await ticketService.getAll()
+    // ✅ Changed from getAll() to getByUser()
+    tickets.value = await ticketService.getByUser(user.value.id)
   } catch (err) {
     console.error('Error loading tickets:', err)
+    showToast('Failed to load tickets', 'error')
   }
 })
 </script>

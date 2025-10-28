@@ -28,8 +28,15 @@ export const userService = {
 }
 
 export const ticketService = {
+  // Get all tickets (for admin purposes)
   async getAll() {
     const response = await api.get('/tickets')
+    return response.data
+  },
+  
+  // Get tickets for specific user only
+  async getByUser(userId) {
+    const response = await api.get(`/tickets?userId=${userId}`)
     return response.data
   },
   

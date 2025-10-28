@@ -31,7 +31,7 @@
             </div>
             <div class="pt-0">
               <div class="text-3xl font-bold text-white">{{ stats.total }}</div>
-              <p class="text-xs text-slate-500 mt-1">All tickets in system</p>
+              <p class="text-xs text-slate-500 mt-1">All your tickets</p>
             </div>
           </div>
 
@@ -47,10 +47,10 @@
 
           <div class="rounded-lg border border-slate-700 bg-slate-800 p-6 shadow-sm">
             <div class="flex flex-col space-y-1.5 pb-3">
-              <h2 class="text-sm font-medium text-slate-400">Resolved Tickets</h2>
+              <h2 class="text-sm font-medium text-slate-400">Closed Tickets</h2>
             </div>
             <div class="pt-0">
-              <div class="text-3xl font-bold text-green-400">{{ stats.resolved }}</div>
+              <div class="text-3xl font-bold text-green-400">{{ stats.closed }}</div>
               <p class="text-xs text-slate-500 mt-1">Completed tickets</p>
             </div>
           </div>
@@ -84,8 +84,8 @@ const tickets = ref([])
 const stats = computed(() => {
   const total = tickets.value.length
   const open = tickets.value.filter(t => t.status === 'open').length
-  const resolved = tickets.value.filter(t => t.status === 'resolved').length
-  return { total, open, resolved }
+  const closed = tickets.value.filter(t => t.status === 'closed').length
+  return { total, open, closed }
 })
 
 const handleLogout = () => {
@@ -99,10 +99,12 @@ onMounted(async () => {
     router.push('/login')
     return
   }
+  
   user.value = JSON.parse(currentUser)
   
   try {
-    tickets.value = await ticketService.getAll()
+    // ✅ Changed from getAll() to getByUser()
+    tickets.value = await ticketService.getByUser(user.value.id)
   } catch (err) {
     console.error('Error loading tickets:', err)
   }
