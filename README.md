@@ -3,7 +3,7 @@
 
 A modern, responsive ticket management system frontend built with Vue.js for the HNG Stage 2 task.
 
-## 🚀 Features
+##  Features
 
 - **User Authentication**: Login and registration system
 - **Ticket Management**: Create, read, update, and delete tickets
@@ -13,7 +13,7 @@ A modern, responsive ticket management system frontend built with Vue.js for the
 - **Modern UI**: Built with Tailwind CSS and Lucide icons
 - **Vue 3 Composition API**: Modern Vue development
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Frontend Framework**: Vue 3
 - **Router**: Vue Router
@@ -23,7 +23,7 @@ A modern, responsive ticket management system frontend built with Vue.js for the
 - **Build Tool**: Vite
 - **State Management**: Vue Composition API (ref, computed)
 
-## 📦 Installation
+##  Installation
 1. if you want the full project not seprated into frontend and backend 
 ```
 clone https://github.com/osigbemhe2020/hng_ticket_app_vue.git
